@@ -1,5 +1,8 @@
 # CucumberBoosterConfig
 
+[![Build
+Status](https://semaphoreci.com/api/v1/projects/b5ad1293-4dd1-425d-8c00-b42ceca09c75/527737/badge.svg)](https://semaphoreci.com/renderedtext/cucumber_booster_config)
+
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cucumber_booster_config`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
