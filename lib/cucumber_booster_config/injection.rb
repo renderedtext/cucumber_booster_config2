@@ -10,7 +10,7 @@ module CucumberBoosterConfig
 
     def initialize(path, options = {})
       @path = path
-      @dry_run = false
+      @dry_run = options.fetch(:dry_run, false)
     end
 
     def dry_run?
@@ -70,7 +70,7 @@ module CucumberBoosterConfig
       end
     end
 
-    def run()
+    def run
       find_profile_files.each do |path|
         define_semaphore_profile(path)
         include_semaphore_profile(path)

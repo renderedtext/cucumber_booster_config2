@@ -5,7 +5,7 @@ describe CucumberBoosterConfig::Injection do
   context "blank cucumber.yml in root" do
 
     before do
-      File.open("cucumber.yml", "w") {|f| }
+      FileUtils.touch("cucumber.yml")
     end
 
     it "inserts semaphoreci profile" do
