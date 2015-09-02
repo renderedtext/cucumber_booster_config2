@@ -3,6 +3,8 @@ module CucumberBoosterConfig
   class Injection
 
     SEMAPHORE_PROFILE = "semaphoreci: --format json --out=features_report.json"
+    DEFAULT_PROFILE = "default: --format pretty --profile semaphoreci features"
+
     CUCUMBER_FILES = [
       "cucumber.yml",
       "config/cucumber.yml"
@@ -11,14 +13,6 @@ module CucumberBoosterConfig
     def initialize(path, options = {})
       @path = path
       @dry_run = options.fetch(:dry_run, false)
-    end
-
-    def dry_run?
-      !!@dry_run
-    end
-
-    def cucumber_file_path(file_name)
-      File.join(@path, file_name)
     end
 
     def find_profile_files
@@ -42,9 +36,7 @@ module CucumberBoosterConfig
         return
       end
 
-      f = File.open(path, "r")
-      lines = f.readlines
-      f.close
+      lines = read_file_lines(path)
 
       lines = ["#{SEMAPHORE_PROFILE}\n"] + lines
 
@@ -55,17 +47,23 @@ module CucumberBoosterConfig
 
     def include_semaphore_profile(path)
       puts "Appending Semaphore profile to default profile"
-      file = File.open(path, "r")
-      lines = file.readlines
-      file.close
+      lines = read_file_lines(path)
+
+      default_profile_found = false
 
       File.open(path, "w") do |file|
         lines.each do |line|
           if line =~ /default:/
-            line = "#{line.gsub("\n", "")} --profile semaphoreci\n"
+            default_profile_found = true
+            line = "#{line.gsub("\n", "")} --profile semaphoreci"
           end
 
           file.puts line
+        end
+
+        if !default_profile_found
+          puts "No definition for default profile found, appending one now"
+          file.puts DEFAULT_PROFILE
         end
       end
     end
@@ -75,6 +73,20 @@ module CucumberBoosterConfig
         define_semaphore_profile(path)
         include_semaphore_profile(path)
       end
+    end
+
+    private
+
+    def dry_run?
+      !!@dry_run
+    end
+
+    def read_file_lines(path)
+      File.open(path, "r") { |f| f.readlines }
+    end
+
+    def cucumber_file_path(file_name)
+      File.join(@path, file_name)
     end
   end
 end
