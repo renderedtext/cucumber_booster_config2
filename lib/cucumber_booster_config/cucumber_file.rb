@@ -6,25 +6,17 @@ module CucumberBoosterConfig
     DEFAULT_PROFILE = "default: --format pretty --profile semaphoreci features"
 
     def initialize(path, dry_run)
-      @user_file_path = path
+      @path = path
       @dry_run = dry_run
-
-      if dry_run?
-        @tempfile = Tempfile.new("cucumber.yml")
-        @path = @tempfile.path
-        @tempfile.close
-      else
-        @path = @user_file_path
-        @tempfile = nil
-      end
     end
 
     def configure_for_autoparallelism
+      load_file_content
+
       if dry_run?
-        load_tempfile
         puts "Content before:"
         puts "---"
-        puts read_file_lines(@path)
+        puts @original_lines
         puts "---"
       end
 
@@ -34,8 +26,10 @@ module CucumberBoosterConfig
       if dry_run?
         puts "Content after:"
         puts "---"
-        puts read_file_lines(@path)
+        puts @new_lines
         puts "---"
+      else
+        save_file
       end
     end
 
@@ -45,47 +39,38 @@ module CucumberBoosterConfig
       !!@dry_run
     end
 
-    def read_file_lines(path)
-      File.open(path, "r") { |f| f.readlines }
+    def load_file_content
+      @original_lines = File.open(@path, "r") { |f| f.readlines }
+      @new_lines = @original_lines
     end
 
-    def load_tempfile
-      original_lines = read_file_lines(@user_file_path)
-      File.open(@path, "w") { |f| original_lines.each { |line| f.puts line } }
+    def save_file
+      File.open(@path, "w") { |f| @new_lines.each { |line| f.puts line } }
     end
 
     def define_semaphore_profile
       puts "Inserting Semaphore configuration at the top"
 
-      lines = read_file_lines(@path)
-
-      lines = ["#{SEMAPHORE_PROFILE}\n"] + lines
-
-      output = File.new(@path, "w")
-      lines.each { |line| output.write line }
-      output.close
+      @new_lines = ["#{SEMAPHORE_PROFILE}\n"] + @new_lines
     end
 
     def include_semaphore_profile
       puts "Appending Semaphore profile to default profile"
-      lines = read_file_lines(@path)
 
       default_profile_found = false
 
-      File.open(@path, "w") do |file|
-        lines.each do |line|
-          if line =~ /default:/
-            default_profile_found = true
-            line = "#{line.gsub("\n", "")} --profile semaphoreci"
-          end
-
-          file.puts line
+      @new_lines.each_with_index do |line, i|
+        if line =~ /default:/
+          default_profile_found = true
+          line = "#{line.gsub("\n", "")} --profile semaphoreci"
         end
 
-        if !default_profile_found
-          puts "No definition for default profile found, inserting new one"
-          file.puts DEFAULT_PROFILE
-        end
+        @new_lines[i] = line
+      end
+
+      if !default_profile_found
+        puts "No definition for default profile found, inserting new one"
+        @new_lines << DEFAULT_PROFILE
       end
     end
   end
