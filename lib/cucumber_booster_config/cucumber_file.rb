@@ -6,13 +6,37 @@ module CucumberBoosterConfig
     DEFAULT_PROFILE = "default: --format pretty --profile semaphoreci features"
 
     def initialize(path, dry_run)
-      @path = path
+      @user_file_path = path
       @dry_run = dry_run
+
+      if dry_run?
+        @tempfile = Tempfile.new("cucumber.yml")
+        @path = @tempfile.path
+        @tempfile.close
+      else
+        @path = @user_file_path
+        @tempfile = nil
+      end
     end
 
     def configure_for_autoparallelism
+      if dry_run?
+        load_tempfile
+        puts "Content before:"
+        puts "---"
+        puts read_file_lines(@path)
+        puts "---"
+      end
+
       define_semaphore_profile
       include_semaphore_profile
+
+      if dry_run?
+        puts "Content after:"
+        puts "---"
+        puts read_file_lines(@path)
+        puts "---"
+      end
     end
 
     private
@@ -25,13 +49,13 @@ module CucumberBoosterConfig
       File.open(path, "r") { |f| f.readlines }
     end
 
-    def define_semaphore_profile
-      puts "Inserting Semaphore configuration at the top of #{@path}"
+    def load_tempfile
+      original_lines = read_file_lines(@user_file_path)
+      File.open(@path, "w") { |f| original_lines.each { |line| f.puts line } }
+    end
 
-      if dry_run?
-        puts SEMAPHORE_PROFILE
-        return
-      end
+    def define_semaphore_profile
+      puts "Inserting Semaphore configuration at the top"
 
       lines = read_file_lines(@path)
 
@@ -59,7 +83,7 @@ module CucumberBoosterConfig
         end
 
         if !default_profile_found
-          puts "No definition for default profile found, appending one now"
+          puts "No definition for default profile found, inserting new one"
           file.puts DEFAULT_PROFILE
         end
       end
