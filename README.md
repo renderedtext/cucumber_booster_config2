@@ -3,16 +3,15 @@
 [![Build
 Status](https://semaphoreci.com/api/v1/projects/b5ad1293-4dd1-425d-8c00-b42ceca09c75/527737/badge.svg)](https://semaphoreci.com/renderedtext/cucumber_booster_config)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cucumber_booster_config`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Injects additional configuration for Cucumber so that it outputs JSON suitable
+for auto-parallelism without affecting stdout.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'cucumber_booster_config'
+# TODO: this gem will live on Gemfury
 ```
 
 And then execute:
@@ -25,15 +24,44 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+$ cucumber-booster-config help inject
+Usage:
+  cucumber-booster-config inject PATH
+
+  Options:
+    [--dry-run], [--no-dry-run]
+
+inject Semaphore's Cucumber configuration in project PATH
+```
+
+If you use the `--dry-run` option, output will look like this:
+
+```
+$ cucumber-booster-config inject . --dry-run
+Running in .
+Found Cucumber profile file: ./cucumber.yml
+Content before:
+---
+default: --format pretty features
+---
+Inserting Semaphore configuration at the top
+Appending Semaphore profile to default profile
+Content after:
+---
+semaphoreci: --format json --out=features_report.json
+default: --format pretty features --profile semaphoreci
+---
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+
+TODO: how to release a new version on Gemfury.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cucumber_booster_config.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/renderedtext/cucumber_booster_config.
