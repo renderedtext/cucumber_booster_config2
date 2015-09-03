@@ -9,14 +9,14 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Marko Anastasov"]
   spec.email         = ["marko@renderedtext.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Cucumber configuration injection for autoparallelism.}
+  spec.description   = %q{Injects additional configuration for Cucumber so that it outputs JSON suitable for auto-parallelism without affecting stdout.}
+  spec.homepage      = "https://github.com/renderedtext/cucumber_booster_config"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = "http://gemfury.com"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
