@@ -2,7 +2,7 @@ module CucumberBoosterConfig
 
   class CucumberFile
 
-    SEMAPHORE_PROFILE = "semaphoreci: --format json --out=features_report.json"
+    SEMAPHORE_PROFILE = "semaphoreci: --format json --out=knapsack_cucumber_report.json"
     DEFAULT_PROFILE = "default: --format pretty --profile semaphoreci features"
 
     def initialize(path, dry_run)
