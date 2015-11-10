@@ -11,16 +11,8 @@ for auto-parallelism without affecting stdout.
 Add this line to your application's Gemfile:
 
 ```ruby
-# TODO: this gem will live on Gemfury
+gem "cucumber_booster_config", :source => "https://gem.fury.io/renderedtext/"
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install cucumber_booster_config
 
 ## Usage
 
@@ -60,7 +52,13 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
-TODO: how to release a new version on Gemfury.
+### How to release a new version
+
+Change version number in `lib/cucumber_booster_config/version.rb`, commit and push your changes.
+This will propagate the gemspec and subsequently `.gem` file that is generated on Gemfury.
+
+Semaphore is currently configured to push new versions to Gemfury.
+If version hasn't changed, Gemfury will simply ignore the update.
 
 ## Contributing
 
