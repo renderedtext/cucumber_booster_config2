@@ -27,7 +27,7 @@ describe CucumberBoosterConfig::Injection do
   end
 
   context "config/cucumber.yml found" do
-    
+
     context "with a default profile" do
 
       before do
@@ -44,8 +44,8 @@ describe CucumberBoosterConfig::Injection do
         File.open("config/cucumber.yml", "r") { |f| lines = f.readlines }
 
         expect(lines.size).to eql(2)
-        expect(lines[0].chomp).to eql(CucumberBoosterConfig::CucumberFile::SEMAPHORE_PROFILE)
-        expect(lines[1].chomp).to eql("default: <%= common %> --profile semaphoreci")
+        expect(lines[0].chomp).to eql("default: <%= common %> --profile semaphoreci")
+        expect(lines[1].chomp).to eql(CucumberBoosterConfig::CucumberFile::SEMAPHORE_PROFILE)
       end
     end
 
@@ -57,7 +57,7 @@ describe CucumberBoosterConfig::Injection do
           f.puts "todd: --format progress --tags @wip CUC=on"
         end
       end
-      
+
       it "inserts a new line that defines the default profile" do
         CucumberBoosterConfig::Injection.new(".").run
 
@@ -65,8 +65,8 @@ describe CucumberBoosterConfig::Injection do
         File.open("config/cucumber.yml", "r") { |f| lines = f.readlines }
 
         expect(lines.size).to eql(3)
-        expect(lines[0].chomp).to eql(CucumberBoosterConfig::CucumberFile::SEMAPHORE_PROFILE)
-        expect(lines[1].chomp).to eql("todd: --format progress --tags @wip CUC=on")
+        expect(lines[0].chomp).to eql("todd: --format progress --tags @wip CUC=on")
+        expect(lines[1].chomp).to eql(CucumberBoosterConfig::CucumberFile::SEMAPHORE_PROFILE)
         expect(lines[2].chomp).to eql("default: --format pretty --profile semaphoreci features")
       end
     end
