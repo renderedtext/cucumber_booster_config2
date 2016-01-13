@@ -49,9 +49,9 @@ module CucumberBoosterConfig
     end
 
     def define_semaphore_profile
-      puts "Inserting Semaphore configuration at the top"
+      puts "Inserting Semaphore configuration"
 
-      @new_lines = ["#{SEMAPHORE_PROFILE}\n"] + @new_lines
+      @new_lines << "#{SEMAPHORE_PROFILE}\n"
     end
 
     def include_semaphore_profile
